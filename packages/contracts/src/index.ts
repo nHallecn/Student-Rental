@@ -92,6 +92,89 @@ export interface RentalUnitSummary extends RentalCharges {
   publicLocation: Coordinates;
 }
 
+export interface AmenitySummary {
+  id: string;
+  name: string;
+  category: string;
+}
+
+export interface PropertyImageSummary {
+  id: string;
+  imageUrl: string;
+  thumbnailUrl?: string;
+  position: number;
+}
+
+export interface RentalUnitDetails extends RentalCharges {
+  id: string;
+  propertyId: string;
+  name: string;
+  unitType: UnitType;
+  description: string;
+  availabilityStatus: UnitAvailability;
+  availableFrom?: string;
+  lastAvailabilityConfirmedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PropertyDetails extends Coordinates {
+  id: string;
+  ownerId: string;
+  ownerName: string;
+  source: ListingSource;
+  contactPhone?: string;
+  name: string;
+  propertyCategory: PropertyCategory;
+  description: string;
+  city: string;
+  neighbourhood: string;
+  landmark: string;
+  accessDetails?: string;
+  locationVisibility: LocationVisibility;
+  verificationStatus: VerificationStatus;
+  status: PropertyStatus;
+  reviewNotes?: string;
+  images: PropertyImageSummary[];
+  amenities: AmenitySummary[];
+  units: RentalUnitDetails[];
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+}
+
+export interface PropertyReportSummary {
+  id: string;
+  userId?: string;
+  propertyId: string;
+  propertyName: string;
+  reason: ReportReason;
+  description: string;
+  status: 'OPEN' | 'IN_REVIEW' | 'RESOLVED' | 'DISMISSED';
+  resolutionNotes?: string;
+  createdAt: string;
+  resolvedAt?: string;
+}
+
+export interface MarketplaceStats {
+  users: number;
+  activeProperties: number;
+  availableUnits: number;
+  pendingListings: number;
+  openReports: number;
+  contactActions: number;
+  staleUnits: number;
+}
+
+export interface OwnerDashboard {
+  properties: number;
+  activeProperties: number;
+  availableUnits: number;
+  occupiedUnits: number;
+  inquiries: number;
+  confirmationNeededUnits: number;
+}
+
 export interface RentalSearchParams {
   minPrice?: number;
   maxPrice?: number;
