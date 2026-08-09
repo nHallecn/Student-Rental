@@ -32,3 +32,4 @@ Base path: `/api/v1`. Successful collections use `{ items }` or the pagination e
 
 Bearer access tokens are required where indicated by role. Refresh tokens are sent only in request bodies to the refresh and logout endpoints and are rotated on every refresh.
 
+Production OTP delivery uses the configured authenticated webhook. The webhook receives `{ identity, purpose, code, expiresInMinutes }`; it is responsible for delivering through the chosen SMS or email provider without logging the code.

@@ -1,0 +1,43 @@
+services:
+  database:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: student_rental
+      POSTGRES_USER: student_rental
+      POSTGRES_PASSWORD: local-development-only
+    volumes:
+      - student_rental_postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student_rental -d student_rental"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      API_PUBLIC_URL: http://localhost:4000
+      DATABASE_URL: postgresql://student_rental:local-development-only@database:5432/student_rental
+      JWT_SECRET: local-docker-secret-replace-before-production-1234
+      DEMO_MODE: "false"
+      OTP_PROVIDER: console
+      CORS_ORIGINS: http://localhost:8081,http://localhost:19006
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "4000:4000"
+    volumes:
+      - student_rental_uploads:/app/uploads
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  student_rental_postgres:
+  student_rental_uploads:
+

@@ -17,6 +17,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "pretest": "npm run build -w @student-rental/contracts",
     "test": "npm run test --workspaces --if-present",
+    "smoke": "node scripts/smoke.mjs",
+    "audit:api": "npm audit --omit=dev --workspace=@student-rental/api --workspace=@student-rental/contracts",
     "check": "npm run typecheck && npm run lint && npm run test"
   },
   "engines": {

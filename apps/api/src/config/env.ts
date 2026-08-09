@@ -16,7 +16,9 @@ const envSchema = z.object({
   ACCESS_TOKEN_TTL: z.string().default('15m'),
   REFRESH_TOKEN_TTL: z.string().default('30d'),
   OTP_TTL_MINUTES: z.coerce.number().int().positive().max(30).default(10),
-  OTP_PROVIDER: z.enum(['console', 'sms', 'email']).default('console'),
+  OTP_PROVIDER: z.enum(['console', 'webhook']).default('console'),
+  OTP_DELIVERY_WEBHOOK_URL: z.string().url().optional().or(z.literal('')),
+  OTP_DELIVERY_WEBHOOK_TOKEN: z.string().optional(),
   DEMO_MODE: booleanFromString.default(true),
   UPLOAD_DRIVER: z.enum(['local', 's3', 'cloudinary']).default('local'),
   UPLOAD_DIR: z.string().default('uploads'),
@@ -24,11 +26,18 @@ const envSchema = z.object({
   AVAILABILITY_REMINDER_DAYS: z.coerce.number().int().positive().default(14),
   AVAILABILITY_STALE_DAYS: z.coerce.number().int().positive().default(30),
   EXACT_LOCATION_ADMIN_ONLY: booleanFromString.default(true),
+  SEED_ADMIN_EMAIL: z.string().email().default('admin@example.cm'),
+  SEED_ADMIN_PASSWORD: z.string().min(12).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {
   throw new Error(`Invalid environment configuration: ${parsed.error.message}`);
+}
+
+if (parsed.data.NODE_ENV === 'production') {
+  if (parsed.data.JWT_SECRET === 'development-only-secret-change-me-123456') throw new Error('JWT_SECRET must be replaced in production');
+  if (parsed.data.OTP_PROVIDER !== 'webhook' || !parsed.data.OTP_DELIVERY_WEBHOOK_URL) throw new Error('Production requires OTP_PROVIDER=webhook and OTP_DELIVERY_WEBHOOK_URL');
 }
 
 export const env = {

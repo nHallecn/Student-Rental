@@ -6,6 +6,7 @@ import { env } from '../config/env.js';
 import type { CoreRepository, NewUser, UserRecord } from '../data/types.js';
 import { toPublicUser } from '../data/types.js';
 import { AppError } from '../lib/errors.js';
+import { deliverOtp } from './otp-delivery.service.js';
 
 const secret = new TextEncoder().encode(env.JWT_SECRET);
 const tokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
@@ -51,6 +52,7 @@ export class AuthService {
   async requestOtp(identity: string, purpose: 'VERIFY_PHONE' | 'SIGN_IN') {
     const code = String(Math.floor(100000 + Math.random() * 900000));
     await this.repository.createOtp({ identity, purpose, codeHash: tokenHash(code), expiresAt: new Date(Date.now() + env.OTP_TTL_MINUTES * 60_000).toISOString() });
+    await deliverOtp(identity, purpose, code);
     return env.NODE_ENV === 'production' ? { delivery: env.OTP_PROVIDER } : { delivery: 'console', debugCode: code };
   }
 
@@ -90,4 +92,3 @@ export class AuthService {
     return { accessToken, refreshToken, expiresInSeconds: accessSeconds };
   }
 }
-
