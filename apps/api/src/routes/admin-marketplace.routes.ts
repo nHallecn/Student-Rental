@@ -13,6 +13,7 @@ router.use('/admin', authenticate, requireRole('ADMIN'));
 router.get('/dashboard/owner', authenticate, requireRole('LANDLORD', 'AGENT'), async (request, response) => response.json({ dashboard: await getRepository().getOwnerDashboard(request.auth!.userId, env.AVAILABILITY_REMINDER_DAYS) }));
 
 router.get('/admin/properties/pending', async (_request, response) => response.json({ items: await getRepository().listPendingProperties() }));
+router.get('/admin/properties', async (_request, response) => response.json({ items: await getRepository().listAllProperties() }));
 router.patch('/admin/properties/:id/review', async (request, response) => {
   const propertyId = id.parse(request.params.id); await requireProperty(propertyId);
   const input = z.object({ decision: z.enum(['APPROVE', 'NEEDS_CHANGES', 'REJECT', 'SUSPEND', 'HIDE']), notes: z.string().trim().max(3000).optional() }).parse(request.body);

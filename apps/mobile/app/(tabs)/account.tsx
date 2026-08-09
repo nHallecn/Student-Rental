@@ -1,0 +1,12 @@
+import { router } from 'expo-router';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { AppButton } from '@/components/AppButton';
+import { Badge } from '@/components/Badge';
+import { Screen } from '@/components/Screen';
+import { titleCase } from '@/lib/format';
+import { useSession } from '@/store/session';
+import { colors, radius, spacing } from '@/theme';
+
+export default function AccountTab() { const { user, signOut } = useSession(); if (!user) return <Screen contentStyle={styles.center}><Text style={styles.title}>Your account</Text><Text style={styles.text}>Browsing is public. Sign in only to save homes, publish listings or moderate the marketplace.</Text><AppButton label="Sign in" onPress={() => router.push('/auth/sign-in')} /><AppButton label="Create account" variant="secondary" onPress={() => router.push('/auth/register')} /></Screen>; return <Screen><View style={styles.profile}><View style={styles.avatar}><Text style={styles.initials}>{user.firstName[0]}{user.lastName[0]}</Text></View><Text style={styles.title}>{user.firstName} {user.lastName}</Text><Badge label={titleCase(user.role)} /><Text style={styles.text}>{user.email ?? user.phone}</Text></View>{user.role === 'STUDENT' ? <AppButton label="My saved homes" variant="secondary" onPress={() => router.push('/(tabs)/saved')} /> : null}{(user.role === 'LANDLORD' || user.role === 'AGENT') ? <AppButton label="Manage properties" variant="secondary" onPress={() => router.push('/(tabs)/properties')} /> : null}{user.role === 'ADMIN' ? <AppButton label="Administration" variant="secondary" onPress={() => router.push('/(tabs)/admin')} /> : null}<AppButton label="Sign out" variant="danger" onPress={() => void signOut().then(() => { Alert.alert('Signed out'); router.replace('/'); })} /></Screen>; }
+const styles = StyleSheet.create({ center: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg }, profile: { alignItems: 'center', gap: spacing.sm, backgroundColor: colors.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, padding: spacing.lg }, avatar: { width: 72, height: 72, borderRadius: 36, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }, initials: { color: colors.surface, fontSize: 24, fontWeight: '900' }, title: { color: colors.ink, fontSize: 27, fontWeight: '900', textAlign: 'center' }, text: { color: colors.muted, lineHeight: 22, textAlign: 'center' } });
+

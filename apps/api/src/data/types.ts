@@ -94,6 +94,7 @@ export interface CoreRepository {
   createInquiry(studentId: string | undefined, unitId: string, method: ContactMethod): Promise<void>;
   recordAnalytics(userId: string | undefined, anonymousId: string | undefined, eventName: string, properties?: Record<string, unknown>): Promise<void>;
   listPendingProperties(): Promise<PropertyDetails[]>;
+  listAllProperties(): Promise<PropertyDetails[]>;
   listUsers(): Promise<PublicUser[]>;
   setUserSuspended(id: string, suspended: boolean): Promise<PublicUser | undefined>;
   getMarketplaceStats(staleDays: number): Promise<MarketplaceStats>;

@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "campushomes",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "cm.campushomes.app"
@@ -37,9 +36,6 @@
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
       "router": {},
       "eas": {
@@ -48,4 +44,3 @@
     }
   }
 }
-

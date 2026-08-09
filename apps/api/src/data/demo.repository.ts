@@ -263,6 +263,7 @@ export class DemoRepository implements CoreRepository {
   async createInquiry(studentId: string | undefined, unitId: string, method: ContactMethod) { this.inquiries.push({ studentId, unitId, method, createdAt: now() }); }
   async recordAnalytics(userId: string | undefined, anonymousId: string | undefined, eventName: string, properties: Record<string, unknown> = {}) { this.analytics.push({ userId, anonymousId, eventName, properties, createdAt: now() }); }
   async listPendingProperties() { return this.properties.filter((property) => ['SUBMITTED', 'PENDING_REVIEW', 'NEEDS_CHANGES'].includes(property.status)); }
+  async listAllProperties() { return [...this.properties].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)); }
   async listUsers(): Promise<PublicUser[]> { return this.users.map(toPublicUser); }
   async setUserSuspended(id: string, suspended: boolean) {
     const user = this.users.find((candidate) => candidate.id === id);
