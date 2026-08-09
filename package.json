@@ -11,9 +11,11 @@
     "dev": "concurrently -n api,mobile -c cyan,magenta \"npm run dev -w @student-rental/api\" \"npm run start -w @student-rental/mobile\"",
     "dev:api": "npm run dev -w @student-rental/api",
     "dev:mobile": "npm run start -w @student-rental/mobile",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @student-rental/contracts && npm run build -w @student-rental/api",
+    "pretypecheck": "npm run build -w @student-rental/contracts",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
+    "pretest": "npm run build -w @student-rental/contracts",
     "test": "npm run test --workspaces --if-present",
     "check": "npm run typecheck && npm run lint && npm run test"
   },

@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { pinoHttp } from 'pino-http';
 import { env } from './config/env.js';
 import { errorHandler, notFound } from './lib/errors.js';
+import { apiRouter } from './routes/index.js';
 
 export function createApp() {
   const app = express();
@@ -35,6 +36,7 @@ export function createApp() {
   app.get('/api/v1', (_request, response) => {
     response.json({ name: 'Student Rental Finder API', version: 'v1', documentation: '/api/v1/docs' });
   });
+  app.use('/api/v1', apiRouter);
 
   app.use(notFound);
   app.use(errorHandler);

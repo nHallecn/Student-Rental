@@ -41,6 +41,30 @@ export interface UniversitySummary extends Coordinates {
   active: boolean;
 }
 
+export interface PublicUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  email?: string;
+  role: UserRole;
+  phoneVerified: boolean;
+  profileImageUrl?: string;
+  suspendedAt?: string;
+  createdAt: string;
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  expiresInSeconds: number;
+}
+
+export interface AuthResponse {
+  user: PublicUser;
+  tokens: AuthTokens;
+}
+
 export interface RentalCharges {
   monthlyRent: number;
   advanceMonths: number;
@@ -97,4 +121,3 @@ export interface ApiErrorBody {
     requestId?: string;
   };
 }
-

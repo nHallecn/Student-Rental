@@ -15,6 +15,8 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32).default('development-only-secret-change-me-123456'),
   ACCESS_TOKEN_TTL: z.string().default('15m'),
   REFRESH_TOKEN_TTL: z.string().default('30d'),
+  OTP_TTL_MINUTES: z.coerce.number().int().positive().max(30).default(10),
+  OTP_PROVIDER: z.enum(['console', 'sms', 'email']).default('console'),
   DEMO_MODE: booleanFromString.default(true),
   UPLOAD_DRIVER: z.enum(['local', 's3', 'cloudinary']).default('local'),
   UPLOAD_DIR: z.string().default('uploads'),
@@ -33,4 +35,3 @@ export const env = {
   ...parsed.data,
   corsOrigins: parsed.data.CORS_ORIGINS.split(',').map((value) => value.trim()).filter(Boolean),
 };
-
