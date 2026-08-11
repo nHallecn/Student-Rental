@@ -1,0 +1,15 @@
+import type { UniversitySummary } from '@student-rental/contracts';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Alert, StyleSheet, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { AppButton } from '@/components/AppButton';
+import { AppTextField } from '@/components/AppTextField';
+import { Screen } from '@/components/Screen';
+import { apiRequest, jsonBody } from '@/lib/api';
+import { colors } from '@/theme';
+
+const empty = { name: '', shortName: '', city: 'Yaounde', latitude: '3.866', longitude: '11.516', defaultRadiusKm: '5', active: true };
+export default function UniversityForm() { const { id } = useLocalSearchParams<{ id?: string }>(); const client = useQueryClient(); const [form, setForm] = useState(empty); const universities = useQuery({ queryKey: ['admin-universities'], queryFn: () => apiRequest<{ items: UniversitySummary[] }>('/admin/universities', {}, true), enabled: Boolean(id) }); useEffect(() => { const item = universities.data?.items.find((value) => value.id === id); if (item) setForm({ name: item.name, shortName: item.shortName, city: item.city, latitude: String(item.latitude), longitude: String(item.longitude), defaultRadiusKm: String(item.defaultRadiusKm), active: item.active }); }, [universities.data, id]); const save = useMutation({ mutationFn: () => apiRequest(id ? `/admin/universities/${id}` : '/admin/universities', { method: id ? 'PATCH' : 'POST', ...jsonBody({ ...form, latitude: Number(form.latitude), longitude: Number(form.longitude), defaultRadiusKm: Number(form.defaultRadiusKm) }) }, true), onSuccess: () => { void client.invalidateQueries({ queryKey: ['admin-universities'] }); router.back(); }, onError: (error) => Alert.alert('Could not save university', error instanceof Error ? error.message : 'Check the fields.') }); return <Screen><Text style={styles.title}>{id ? 'Edit university' : 'Add university'}</Text><AppTextField label="Official name" value={form.name} onChangeText={(name) => setForm({ ...form, name })} /><AppTextField label="Abbreviation" value={form.shortName} onChangeText={(shortName) => setForm({ ...form, shortName })} autoCapitalize="characters" /><AppTextField label="City" value={form.city} onChangeText={(city) => setForm({ ...form, city })} /><AppTextField label="Campus latitude" value={form.latitude} onChangeText={(latitude) => setForm({ ...form, latitude })} keyboardType="decimal-pad" /><AppTextField label="Campus longitude" value={form.longitude} onChangeText={(longitude) => setForm({ ...form, longitude })} keyboardType="decimal-pad" /><AppTextField label="Default search radius (km)" value={form.defaultRadiusKm} onChangeText={(defaultRadiusKm) => setForm({ ...form, defaultRadiusKm })} keyboardType="decimal-pad" /><AppButton label="Save university" loading={save.isPending} onPress={() => save.mutate()} /></Screen>; }
+const styles = StyleSheet.create({ title: { color: colors.ink, fontSize: 28, fontWeight: '900' } });
+

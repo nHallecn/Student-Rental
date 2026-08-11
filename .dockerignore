@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+**/node_modules
+**/dist
+.npm-cache
+tmp
+coverage
+.env
+uploads
+*.log
+

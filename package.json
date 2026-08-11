@@ -1,0 +1,41 @@
+{
+  "name": "student-rental-finder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-first student housing marketplace for Cameroon",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,mobile -c cyan,magenta \"npm run dev -w @student-rental/api\" \"npm run start -w @student-rental/mobile\"",
+    "dev:api": "npm run dev -w @student-rental/api",
+    "dev:mobile": "npm run start -w @student-rental/mobile",
+    "build": "npm run build -w @student-rental/contracts && npm run build -w @student-rental/api",
+    "pretypecheck": "npm run build -w @student-rental/contracts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "pretest": "npm run build -w @student-rental/contracts",
+    "test": "npm run test --workspaces --if-present",
+    "smoke": "node scripts/smoke.mjs",
+    "audit:api": "npm audit --omit=dev --workspace=@student-rental/api --workspace=@student-rental/contracts",
+    "check": "npm run typecheck && npm run lint && npm run test"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "packageManager": "npm@11.12.1",
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.26.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.26.2"
+  }
+}
